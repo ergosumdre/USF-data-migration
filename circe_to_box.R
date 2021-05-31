@@ -14,9 +14,7 @@ box_dir <- substr(getwd(), start = nchar(getwd()) - 6, stop = nchar(getwd()))
 boxr::box_dir_create(dir_name = box_dir, parent_dir_id = "XXXXXXXXX")
 
 # searches for new box dir and sets wd
-new_id <- box_search(box_dir, type = "folder") %>% 
-  as.data.frame() %>% select(id, name) %>% 
-  filter(name == box_dir) %>% select(id)
+new_id <- box_search(box_dir, type = "folder") %>% as.data.frame() %>% dplyr::select(id,name) %>% filter(name == box_dir) %>% select(id)
 new_id <- as.character(new_id$id)
 boxr::box_setwd(new_id)
 
