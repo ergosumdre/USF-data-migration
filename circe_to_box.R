@@ -2,15 +2,18 @@ library("dplyr")
 library("boxr")
 library("stringr")
 
-
-args <- commandArgs(trailingOnly = FALSE)
+### Command Line args ###
+args <- commandArgs(trailingOnly = FALSE) 
 fileNames_all <- args[6]
 fileLocation <- fileNames_all
+### END Command line args ###
 
-
+### Box auth ###
 boxr::box_auth(client_id = "XXXXXXXX",
                client_secret = "XXXXXXX")
+## END Box auth ###
 
+### Upload files from The University of South Florida's Cloud Computing Cluster to Box ###
 # box to circe if DIR does not exist function
 box_to_circe <- function(dir_name, working_dir){
   box_dir <- as.character(dir_name)
@@ -35,7 +38,6 @@ put_name <- substr(x = fileLocation, # strip date from parameter
                    start = nchar(fileLocation) - 6,
                    stop = nchar(fileLocation))
 query_term <- gsub("-", " AND ", put_name) # create search term for box funtion
-
 box_current_ls <- boxr::box_ls() %>% as.data.frame() %>% select(id) # get all ids in current dir
 get_id <- data.frame() # create empty df
 get_id <- boxr::box_search_folders(query = query_term, # search for current folder. If exist, get folder id
@@ -43,7 +45,6 @@ get_id <- boxr::box_search_folders(query = query_term, # search for current fold
                                    content_types = "name") %>%
   as.data.frame()
 get_id <- get_id$id[1]
-
 if(length(get_id) > 0){ # check if get_id is still empty, if not, upload remining files
   print("dir exist. Starting upload remaining files")
   circe_df <- data.frame(files = list.files(path = fileLocation, # get df of circe files in DIR
@@ -66,3 +67,4 @@ if(length(get_id) > 0){ # check if get_id is still empty, if not, upload reminin
   box_to_circe(dir_name = put_name,
                working_dir = put_dir)
 )
+### END Upload files from The University of South Florida's Cloud Computing Cluster to Box ###
